@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
     public static final String DATABASE_BOOK_STORE = "BookStore.db";
+    public static final int DATABASE_VERSION = 3;
 
     private MyDatabaseHelper mMyDatabaseHelper;
 
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mMyDatabaseHelper = new MyDatabaseHelper(this, DATABASE_BOOK_STORE, null, 3);
+        mMyDatabaseHelper = new MyDatabaseHelper(this, DATABASE_BOOK_STORE, null, DATABASE_VERSION);
 
         mCreateDatabaseButton = (Button) findViewById(R.id.create_database);
         mCreateDatabaseButton.setOnClickListener(new View.OnClickListener() {
@@ -48,21 +49,21 @@ public class MainActivity extends AppCompatActivity {
 
                 ContentValues contentValues = new ContentValues();
 
-                contentValues.put(MyDatabaseHelper.COLUMN_NAME, "The Da Vinci Code");
-                contentValues.put(MyDatabaseHelper.COLUMN_AUTHOR, "Dan Brown");
-                contentValues.put(MyDatabaseHelper.COLUMN_PAGES, 454);
-                contentValues.put(MyDatabaseHelper.COLUMN_PRICE, 16.96);
+                contentValues.put(MyDatabaseHelper.BOOK_COLUMN_NAME, "The Da Vinci Code");
+                contentValues.put(MyDatabaseHelper.BOOK_COLUMN_AUTHOR, "Dan Brown");
+                contentValues.put(MyDatabaseHelper.BOOK_COLUMN_PAGES, 454);
+                contentValues.put(MyDatabaseHelper.BOOK_COLUMN_PRICE, 16.96);
 
-                sqLiteDatabase.insert(MyDatabaseHelper.TABLE_BOOK, null, contentValues);
+                sqLiteDatabase.insert(MyDatabaseHelper.TABLE_BOOK_NAME, null, contentValues);
 
                 contentValues.clear();
 
-                contentValues.put(MyDatabaseHelper.COLUMN_NAME, "The Lost Symbol");
-                contentValues.put(MyDatabaseHelper.COLUMN_AUTHOR, "Dan Brown");
-                contentValues.put(MyDatabaseHelper.COLUMN_PAGES, 510);
-                contentValues.put(MyDatabaseHelper.COLUMN_PRICE, 19.95);
+                contentValues.put(MyDatabaseHelper.BOOK_COLUMN_NAME, "The Lost Symbol");
+                contentValues.put(MyDatabaseHelper.BOOK_COLUMN_AUTHOR, "Dan Brown");
+                contentValues.put(MyDatabaseHelper.BOOK_COLUMN_PAGES, 510);
+                contentValues.put(MyDatabaseHelper.BOOK_COLUMN_PRICE, 19.95);
 
-                sqLiteDatabase.insert(MyDatabaseHelper.TABLE_BOOK, null, contentValues);
+                sqLiteDatabase.insert(MyDatabaseHelper.TABLE_BOOK_NAME, null, contentValues);
 
             }
         });
@@ -76,10 +77,10 @@ public class MainActivity extends AppCompatActivity {
 
                 ContentValues contentValues = new ContentValues();
 
-                contentValues.put(MyDatabaseHelper.COLUMN_PRICE, 10.99);
+                contentValues.put(MyDatabaseHelper.BOOK_COLUMN_PRICE, 10.99);
 
-                sqLiteDatabase.update(MyDatabaseHelper.TABLE_BOOK, contentValues,
-                        MyDatabaseHelper.COLUMN_NAME + " = ?", new String[] {"The Da Vinci Code"});
+                sqLiteDatabase.update(MyDatabaseHelper.TABLE_BOOK_NAME, contentValues,
+                        MyDatabaseHelper.BOOK_COLUMN_NAME + " = ?", new String[] {"The Da Vinci Code"});
             }
         });
 
@@ -90,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
 
                 SQLiteDatabase sqLiteDatabase = mMyDatabaseHelper.getWritableDatabase();
 
-                sqLiteDatabase.delete(MyDatabaseHelper.TABLE_BOOK,
-                        MyDatabaseHelper.COLUMN_PAGES + " > ?", new String[] {"500"});
+                sqLiteDatabase.delete(MyDatabaseHelper.TABLE_BOOK_NAME,
+                        MyDatabaseHelper.BOOK_COLUMN_PAGES + " > ?", new String[] {"500"});
             }
         });
 
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
                 SQLiteDatabase sqLiteDatabase = mMyDatabaseHelper.getWritableDatabase();
 
-                Cursor cursor = sqLiteDatabase.query(MyDatabaseHelper.TABLE_BOOK,
+                Cursor cursor = sqLiteDatabase.query(MyDatabaseHelper.TABLE_BOOK_NAME,
                         null, null, null, null, null, null);
 
                 if (cursor != null) {
@@ -110,13 +111,13 @@ public class MainActivity extends AppCompatActivity {
                     while (cursor.moveToNext()) {
 
                         String name = cursor.getString(cursor.getColumnIndex(
-                                MyDatabaseHelper.COLUMN_NAME));
+                                MyDatabaseHelper.BOOK_COLUMN_NAME));
                         String author = cursor.getString(cursor.getColumnIndex(
-                                MyDatabaseHelper.COLUMN_AUTHOR));
+                                MyDatabaseHelper.BOOK_COLUMN_AUTHOR));
                         int pages = cursor.getInt(cursor.getColumnIndex(
-                                MyDatabaseHelper.COLUMN_PAGES));
+                                MyDatabaseHelper.BOOK_COLUMN_PAGES));
                         double price = cursor.getDouble(cursor.getColumnIndex(
-                                MyDatabaseHelper.COLUMN_PRICE));
+                                MyDatabaseHelper.BOOK_COLUMN_PRICE));
 
                         Log.d(TAG, "Book name is " + name);
                         Log.d(TAG, "Book author is " + author);
@@ -139,19 +140,19 @@ public class MainActivity extends AppCompatActivity {
                 sqLiteDatabase.beginTransaction();
 
                 try {
-                    sqLiteDatabase.delete(MyDatabaseHelper.TABLE_BOOK, null, null);
+                    sqLiteDatabase.delete(MyDatabaseHelper.TABLE_BOOK_NAME, null, null);
                     if (false) {
                         throw new NullPointerException();
                     }
 
                     ContentValues contentValues = new ContentValues();
 
-                    contentValues.put(MyDatabaseHelper.COLUMN_NAME, "Game of Thrones");
-                    contentValues.put(MyDatabaseHelper.COLUMN_AUTHOR, "George Martin");
-                    contentValues.put(MyDatabaseHelper.COLUMN_PAGES, 720);
-                    contentValues.put(MyDatabaseHelper.COLUMN_PRICE, 20.85);
+                    contentValues.put(MyDatabaseHelper.BOOK_COLUMN_NAME, "Game of Thrones");
+                    contentValues.put(MyDatabaseHelper.BOOK_COLUMN_AUTHOR, "George Martin");
+                    contentValues.put(MyDatabaseHelper.BOOK_COLUMN_PAGES, 720);
+                    contentValues.put(MyDatabaseHelper.BOOK_COLUMN_PRICE, 20.85);
 
-                    sqLiteDatabase.insert(MyDatabaseHelper.TABLE_BOOK, null, contentValues);
+                    sqLiteDatabase.insert(MyDatabaseHelper.TABLE_BOOK_NAME, null, contentValues);
 
                     sqLiteDatabase.setTransactionSuccessful();
 

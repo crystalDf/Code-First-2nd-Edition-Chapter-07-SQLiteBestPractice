@@ -19,15 +19,21 @@ public class DatabaseProvider extends ContentProvider {
 
     public static final String AUTHORITY = "com.star.sqlitebestpractice.provider";
     public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
-    public static final Uri BOOK_CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, "book");
-    public static final Uri CATEGORY_CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, "category");
+    public static final Uri BOOK_CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI,
+            MyDatabaseHelper.TABLE_BOOK_NAME.toLowerCase());
+    public static final Uri CATEGORY_CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI,
+            MyDatabaseHelper.TABLE_CATEGORY_NAME.toLowerCase());
 
     public static final String TYPE_DIR = "vnd.android.cursor.dir/vnd.";
     public static final String TYPE_ITEM = "vnd.android.cursor.item/vnd.";
-    public static final String TYPE_BOOK_DIR = TYPE_DIR + AUTHORITY + ".book";
-    public static final String TYPE_BOOK_ITEM = TYPE_ITEM + AUTHORITY + ".book";
-    public static final String TYPE_CATEGORY_DIR = TYPE_DIR + AUTHORITY + ".category";
-    public static final String TYPE_CATEGORY_ITEM = TYPE_ITEM + AUTHORITY + ".category";
+    public static final String TYPE_BOOK_DIR = TYPE_DIR + AUTHORITY + "." +
+            MyDatabaseHelper.TABLE_BOOK_NAME.toLowerCase();
+    public static final String TYPE_BOOK_ITEM = TYPE_ITEM + AUTHORITY + "." +
+            MyDatabaseHelper.TABLE_BOOK_NAME.toLowerCase();
+    public static final String TYPE_CATEGORY_DIR = TYPE_DIR + AUTHORITY + "." +
+            MyDatabaseHelper.TABLE_CATEGORY_NAME.toLowerCase();
+    public static final String TYPE_CATEGORY_ITEM = TYPE_ITEM + AUTHORITY + "." +
+            MyDatabaseHelper.TABLE_CATEGORY_NAME.toLowerCase();
 
     private static UriMatcher sUriMatcher;
 
@@ -35,10 +41,14 @@ public class DatabaseProvider extends ContentProvider {
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(AUTHORITY, "book", BOOK_DIR);
-        sUriMatcher.addURI(AUTHORITY, "book/#", BOOK_ITEM);
-        sUriMatcher.addURI(AUTHORITY, "category", CATEGORY_DIR);
-        sUriMatcher.addURI(AUTHORITY, "category/#", CATEGORY_ITEM);
+        sUriMatcher.addURI(AUTHORITY, MyDatabaseHelper.TABLE_BOOK_NAME.toLowerCase(),
+                BOOK_DIR);
+        sUriMatcher.addURI(AUTHORITY, MyDatabaseHelper.TABLE_BOOK_NAME.toLowerCase() + "/#",
+                BOOK_ITEM);
+        sUriMatcher.addURI(AUTHORITY, MyDatabaseHelper.TABLE_CATEGORY_NAME.toLowerCase(),
+                CATEGORY_DIR);
+        sUriMatcher.addURI(AUTHORITY, MyDatabaseHelper.TABLE_CATEGORY_NAME.toLowerCase() + "/#",
+                CATEGORY_ITEM);
     }
 
     public DatabaseProvider() {
@@ -48,7 +58,7 @@ public class DatabaseProvider extends ContentProvider {
     public boolean onCreate() {
 
         mMyDatabaseHelper = new MyDatabaseHelper(getContext(), MainActivity.DATABASE_BOOK_STORE,
-                null, 3);
+                null, MainActivity.DATABASE_VERSION);
 
         return true;
     }
@@ -64,26 +74,26 @@ public class DatabaseProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
 
             case BOOK_DIR:
-                cursor = sqLiteDatabase.query(MyDatabaseHelper.TABLE_BOOK, projection,
+                cursor = sqLiteDatabase.query(MyDatabaseHelper.TABLE_BOOK_NAME, projection,
                         selection, selectionArgs, null, null, sortOrder);
                 break;
 
             case BOOK_ITEM:
                 String bookId = uri.getPathSegments().get(1);
-                cursor = sqLiteDatabase.query(MyDatabaseHelper.TABLE_BOOK, projection,
-                        MyDatabaseHelper.COLUMN_ID + " = ?", new String[] { bookId },
+                cursor = sqLiteDatabase.query(MyDatabaseHelper.TABLE_BOOK_NAME, projection,
+                        MyDatabaseHelper.BOOK_COLUMN_ID + " = ?", new String[] { bookId },
                         null, null, sortOrder);
                 break;
 
             case CATEGORY_DIR:
-                cursor = sqLiteDatabase.query(MyDatabaseHelper.TABLE_CATEGORY, projection,
+                cursor = sqLiteDatabase.query(MyDatabaseHelper.TABLE_CATEGORY_NAME, projection,
                         selection, selectionArgs, null, null, sortOrder);
                 break;
 
             case CATEGORY_ITEM:
                 String categoryId = uri.getPathSegments().get(1);
-                cursor = sqLiteDatabase.query(MyDatabaseHelper.TABLE_CATEGORY, projection,
-                        MyDatabaseHelper.COLUMN_CATEGORY_ID + " = ?", new String[] { categoryId },
+                cursor = sqLiteDatabase.query(MyDatabaseHelper.TABLE_CATEGORY_NAME, projection,
+                        MyDatabaseHelper.CATEGORY_COLUMN_ID + " = ?", new String[] { categoryId },
                         null, null, sortOrder);
                 break;
 
@@ -105,14 +115,14 @@ public class DatabaseProvider extends ContentProvider {
 
             case BOOK_DIR:
             case BOOK_ITEM:
-                long newBookId = sqLiteDatabase.insert(MyDatabaseHelper.TABLE_BOOK,
+                long newBookId = sqLiteDatabase.insert(MyDatabaseHelper.TABLE_BOOK_NAME,
                         null, values);
                 uriReturn = ContentUris.withAppendedId(BOOK_CONTENT_URI, newBookId);
                 break;
 
             case CATEGORY_DIR:
             case CATEGORY_ITEM:
-                long newCategoryId = sqLiteDatabase.insert(MyDatabaseHelper.TABLE_CATEGORY,
+                long newCategoryId = sqLiteDatabase.insert(MyDatabaseHelper.TABLE_CATEGORY_NAME,
                         null, values);
                 uriReturn = ContentUris.withAppendedId(CATEGORY_CONTENT_URI, newCategoryId);
                 break;
@@ -134,25 +144,25 @@ public class DatabaseProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
 
             case BOOK_DIR:
-                updatedRows = sqLiteDatabase.update(MyDatabaseHelper.TABLE_BOOK, values,
+                updatedRows = sqLiteDatabase.update(MyDatabaseHelper.TABLE_BOOK_NAME, values,
                         selection, selectionArgs);
                 break;
 
             case BOOK_ITEM:
                 String bookId = uri.getPathSegments().get(1);
-                updatedRows = sqLiteDatabase.update(MyDatabaseHelper.TABLE_BOOK, values,
-                        MyDatabaseHelper.COLUMN_ID + " = ?", new String[] { bookId });
+                updatedRows = sqLiteDatabase.update(MyDatabaseHelper.TABLE_BOOK_NAME, values,
+                        MyDatabaseHelper.BOOK_COLUMN_ID + " = ?", new String[] { bookId });
                 break;
 
             case CATEGORY_DIR:
-                updatedRows = sqLiteDatabase.update(MyDatabaseHelper.TABLE_CATEGORY, values,
+                updatedRows = sqLiteDatabase.update(MyDatabaseHelper.TABLE_CATEGORY_NAME, values,
                         selection, selectionArgs);
                 break;
 
             case CATEGORY_ITEM:
                 String categoryId = uri.getPathSegments().get(1);
-                updatedRows = sqLiteDatabase.update(MyDatabaseHelper.TABLE_CATEGORY, values,
-                        MyDatabaseHelper.COLUMN_CATEGORY_ID + " = ?", new String[] { categoryId });
+                updatedRows = sqLiteDatabase.update(MyDatabaseHelper.TABLE_CATEGORY_NAME, values,
+                        MyDatabaseHelper.CATEGORY_COLUMN_ID + " = ?", new String[] { categoryId });
                 break;
 
             default:
@@ -171,25 +181,25 @@ public class DatabaseProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)) {
 
             case BOOK_DIR:
-                deletedRows = sqLiteDatabase.delete(MyDatabaseHelper.TABLE_BOOK,
+                deletedRows = sqLiteDatabase.delete(MyDatabaseHelper.TABLE_BOOK_NAME,
                         selection, selectionArgs);
                 break;
 
             case BOOK_ITEM:
                 String bookId = uri.getPathSegments().get(1);
-                deletedRows = sqLiteDatabase.delete(MyDatabaseHelper.TABLE_BOOK,
-                        MyDatabaseHelper.COLUMN_ID + " = ?", new String[] { bookId });
+                deletedRows = sqLiteDatabase.delete(MyDatabaseHelper.TABLE_BOOK_NAME,
+                        MyDatabaseHelper.BOOK_COLUMN_ID + " = ?", new String[] { bookId });
                 break;
 
             case CATEGORY_DIR:
-                deletedRows = sqLiteDatabase.delete(MyDatabaseHelper.TABLE_CATEGORY,
+                deletedRows = sqLiteDatabase.delete(MyDatabaseHelper.TABLE_CATEGORY_NAME,
                         selection, selectionArgs);
                 break;
 
             case CATEGORY_ITEM:
                 String categoryId = uri.getPathSegments().get(1);
-                deletedRows = sqLiteDatabase.delete(MyDatabaseHelper.TABLE_CATEGORY,
-                        MyDatabaseHelper.COLUMN_CATEGORY_ID + " = ?", new String[] { categoryId });
+                deletedRows = sqLiteDatabase.delete(MyDatabaseHelper.TABLE_CATEGORY_NAME,
+                        MyDatabaseHelper.CATEGORY_COLUMN_ID + " = ?", new String[] { categoryId });
                 break;
 
             default:

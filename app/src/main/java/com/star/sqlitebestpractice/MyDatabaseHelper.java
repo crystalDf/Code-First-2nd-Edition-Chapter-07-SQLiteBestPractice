@@ -7,36 +7,38 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
 
-    public static final String TABLE_BOOK = "Book";
-    public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_AUTHOR = "author";
-    public static final String COLUMN_PRICE = "price";
-    public static final String COLUMN_PAGES = "pages";
-    public static final String COLUMN_NAME = "name";
-    public static final String COLUMN_FOREIGN_CATEGORY_ID = "category_id";
+    public static final String TABLE_BOOK_NAME = "Book";
 
-    public static final String TABLE_CATEGORY = "Category";
-    public static final String COLUMN_CATEGORY_ID = COLUMN_ID;
-    public static final String COLUMN_CATEGORY_NAME = "category_name";
-    public static final String COLUMN_CATEGORY_CODE = "category_code";
+    public static final String BOOK_COLUMN_ID = "_id";
+    public static final String BOOK_COLUMN_AUTHOR = "author";
+    public static final String BOOK_COLUMN_PRICE = "price";
+    public static final String BOOK_COLUMN_PAGES = "pages";
+    public static final String BOOK_COLUMN_NAME = "name";
+    public static final String BOOK_COLUMN_CATEGORY_ID = "category_id";
 
-    public static final String CREATE_BOOK = "create table " + TABLE_BOOK + " (" +
-            COLUMN_ID + " integer primary key autoincrement" + ", " +
-            COLUMN_AUTHOR + " text" + ", " +
-            COLUMN_PRICE + " real" + ", " +
-            COLUMN_PAGES + " integer" + ", " +
-            COLUMN_NAME + " text" + ", " +
-            COLUMN_FOREIGN_CATEGORY_ID + " integer" +
+    public static final String TABLE_CATEGORY_NAME = "Category";
+
+    public static final String CATEGORY_COLUMN_ID = "_id";
+    public static final String CATEGORY_COLUMN_NAME = "category_name";
+    public static final String CATEGORY_COLUMN_CODE = "category_code";
+
+    public static final String CREATE_BOOK = "CREATE TABLE " + TABLE_BOOK_NAME + " (" +
+            BOOK_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + ", " +
+            BOOK_COLUMN_AUTHOR + " TEXT" + ", " +
+            BOOK_COLUMN_PRICE + " REAL" + ", " +
+            BOOK_COLUMN_PAGES + " INTEGER" + ", " +
+            BOOK_COLUMN_NAME + " TEXT" + ", " +
+            BOOK_COLUMN_CATEGORY_ID + " INTEGER" +
             ")";
 
-    public static final String CREATE_CATEGORY = "create table " + TABLE_CATEGORY + " (" +
-            COLUMN_CATEGORY_ID + " integer primary key autoincrement" + ", " +
-            COLUMN_CATEGORY_NAME + " text" + ", " +
-            COLUMN_CATEGORY_CODE + " integer" +
+    public static final String CREATE_CATEGORY = "CREATE TABLE " + TABLE_CATEGORY_NAME + " (" +
+            CATEGORY_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + ", " +
+            CATEGORY_COLUMN_NAME + " TEXT" + ", " +
+            CATEGORY_COLUMN_CODE + " INTEGER" +
             ")";
 
-    public static final String ALTER_BOOK = "alter table " + TABLE_BOOK + " add column " +
-            COLUMN_FOREIGN_CATEGORY_ID + " integer";
+    public static final String ALTER_BOOK = "ALTER TABLE " + TABLE_BOOK_NAME + " ADD COLUMN " +
+            BOOK_COLUMN_CATEGORY_ID + " INTEGER";
 
     public MyDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
