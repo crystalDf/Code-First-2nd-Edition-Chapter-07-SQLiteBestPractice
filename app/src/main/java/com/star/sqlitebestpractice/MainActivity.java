@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     sqLiteDatabase.delete(MyDatabaseHelper.TABLE_BOOK_NAME, null, null);
+
                     if (false) {
                         throw new NullPointerException();
                     }
